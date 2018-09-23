@@ -176,6 +176,7 @@ namespace MoveFiles.Windows
       if (!IO.Directory.Exists(m_destinationDirectory))
       {
         IO.Directory.CreateDirectory(m_destinationDirectory);
+        ValidateDestination();
       }
 
       // Reset the moved file count and begin the moving operation in the background
