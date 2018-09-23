@@ -43,19 +43,9 @@ namespace MoveFiles.Windows
     #region Member Variables
 
     /// <summary>
-    /// Message indicating to user that the move was successful.
-    /// </summary>
-    private const string SuccessMessage = "Total number of {0} files and directories were moved successfully!!!\n\nFiles & directories are located at: {1}";
-
-    /// <summary>
     /// Error message for user.
     /// </summary>
     private const string ErrorMessage = "An error occured when moving files and folders";
-
-    /// <summary>
-    /// Message indicating to user that no files or directories were moved.
-    /// </summary>
-    private const string NoneMovedMessage = "No files or directories to be moved.";
 
     /// <summary>
     /// Invalid path message.
@@ -467,30 +457,37 @@ namespace MoveFiles.Windows
       // Get the conversion scale based on the selected Unit 
       double conversion = SizeUnitConversion(sizeUnitSelected);
 
-      // Move files
-      foreach (IO.FileInfo fileInfo in m_files)
+      try
       {
-        double fileSize = conversion * fileInfo.Length;
-
-        if (min <= fileSize && fileSize <= max)
+        // Move files
+        foreach (IO.FileInfo fileInfo in m_files)
         {
-          string destinationFile = IO.Path.Combine(m_destinationDirectory, fileInfo.Name);
-          IO.File.Move(fileInfo.FullName, destinationFile);
-          worker.ReportProgress(++m_movedFilesCount);
+          double fileSize = conversion * fileInfo.Length;
+
+          if (min <= fileSize && fileSize <= max)
+          {
+            string destinationFile = IO.Path.Combine(m_destinationDirectory, fileInfo.Name);
+            IO.File.Move(fileInfo.FullName, destinationFile);
+            worker.ReportProgress(++m_movedFilesCount);
+          }
+        }
+
+        // Move folders
+        foreach (IO.DirectoryInfo dirInfo in m_directories)
+        {
+          double dirSize = conversion * GetFolderSize(dirInfo);
+
+          if (min <= dirSize && dirSize <= max)
+          {
+            string destinationDirectory = IO.Path.Combine(m_destinationDirectory, dirInfo.Name);
+            IO.Directory.Move(dirInfo.FullName, destinationDirectory);
+            worker.ReportProgress(++m_movedFilesCount);
+          }
         }
       }
-
-      // Move folders
-      foreach (IO.DirectoryInfo dirInfo in m_directories)
+      catch (Exception ex)
       {
-        double dirSize = conversion * GetFolderSize(dirInfo);
-
-        if (min <= dirSize && dirSize <= max)
-        {
-          string destinationDirectory = IO.Path.Combine(m_destinationDirectory, dirInfo.Name);
-          IO.Directory.Move(dirInfo.FullName, destinationDirectory);
-          worker.ReportProgress(++m_movedFilesCount);
-        }
+        throw new Exception(ErrorMessage + "\n\nDetail: " + ex.ToString());
       }
     }
 
@@ -509,23 +506,29 @@ namespace MoveFiles.Windows
       else
       {
         string[] extensions = REGEX.Regex.Split(extensionTextBox.Text, @"\s+|,+");
-
-        // Go through each extension
-        foreach (string ext in extensions)
+        try
         {
-          // Ignore white space extension
-          if (!string.IsNullOrWhiteSpace(ext))
+          // Go through each extension
+          foreach (string ext in extensions)
           {
-            IO.DirectoryInfo sourceDirInfo = new IO.DirectoryInfo(m_sourceDirectory);
-
-            // Move files that have matching extensions in the current directory only
-            foreach (IO.FileInfo fileInfo in sourceDirInfo.GetFiles("*." + ext, IO.SearchOption.TopDirectoryOnly))
+            // Ignore white space extension
+            if (!string.IsNullOrWhiteSpace(ext))
             {
-              string destinationFile = IO.Path.Combine(m_destinationDirectory, fileInfo.Name);
-              IO.File.Move(fileInfo.FullName, destinationFile);
-              worker.ReportProgress(++m_movedFilesCount);
+              IO.DirectoryInfo sourceDirInfo = new IO.DirectoryInfo(m_sourceDirectory);
+
+              // Move files that have matching extensions in the current directory only
+              foreach (IO.FileInfo fileInfo in sourceDirInfo.GetFiles("*." + ext, IO.SearchOption.TopDirectoryOnly))
+              {
+                string destinationFile = IO.Path.Combine(m_destinationDirectory, fileInfo.Name);
+                IO.File.Move(fileInfo.FullName, destinationFile);
+                worker.ReportProgress(++m_movedFilesCount);
+              }
             }
           }
+        }
+        catch (Exception ex)
+        {
+          throw new Exception(ErrorMessage + "\n\nDetail: " + ex.ToString());
         }
       }
     }
@@ -545,25 +548,6 @@ namespace MoveFiles.Windows
       }
 
       return totalSize;
-    }
-
-    /// <summary>
-    /// Display a result message box for user after the move operation is completed.
-    /// </summary>
-    /// <param name="movedFilesCount">Number of files and directories that have been moved.</param>
-    /// <param name="destinationPath">The destination path</param>
-    private static void DisplayResultMessage(int movedFilesCount, string destinationPath)
-    {
-      if (movedFilesCount > 0)
-      {
-        MessageBox.Show(string.Format(SuccessMessage, movedFilesCount, destinationPath), "Success",
-                        MessageBoxButton.OK, MessageBoxImage.None);
-      }
-      else
-      {
-        MessageBox.Show(NoneMovedMessage, "Success",
-                        MessageBoxButton.OK, MessageBoxImage.Information);
-      }
     }
 
     /// <summary>
@@ -707,6 +691,7 @@ namespace MoveFiles.Windows
       
       // Create a ProgressWindow object and start the animation for the progress bar
       m_progressWindow = new ProgressWindow();
+      m_progressWindow.Owner = this;
       m_progressWindow.ProgressBarWindow.IsIndeterminate = true;
       SelectFilesByOption selection = (SelectFilesByOption)u_selectComboBox.SelectedIndex;
 
@@ -770,7 +755,6 @@ namespace MoveFiles.Windows
     /// <param name="e">Event arguments</param>
     private void ProgressCompletedHandler(object sender, RunWorkerCompletedEventArgs e)
     {
-      //DisplayResultMessage(m_movedFilesCount, m_destinationDirectory);
       if (e.Error != null)
       {
         DisplayErrorMessage(e.Error);
@@ -780,7 +764,8 @@ namespace MoveFiles.Windows
       {
         m_progressWindow.CompletedButton.Visibility = Visibility.Visible;
         m_progressWindow.ProgressBarWindow.IsIndeterminate = false;
-        m_progressWindow.ProgressTextBlock.Text = string.Format(ProgressWindow.CompletedMoveMessageFormat, m_movedFilesCount);
+        m_progressWindow.ProgressTextBlock.Text = string.Format(ProgressWindow.CompletedMoveMessageFormat, 
+                                                                m_movedFilesCount, m_destinationDirectory);
       }
     }
 

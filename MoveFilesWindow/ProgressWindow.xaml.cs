@@ -19,7 +19,7 @@ namespace MoveFiles.Windows
     /// <summary>
     /// Message indicating the move operation is completed.
     /// </summary>
-    public const string CompletedMoveMessageFormat = "Moved {0} files & directories";
+    public const string CompletedMoveMessageFormat = "Moved {0} files & directories to {1}";
 
     /// <summary>
     /// Get a reference to the progress bar object.
@@ -72,6 +72,5 @@ namespace MoveFiles.Windows
     }
 
     #endregion
-
   }
 }
