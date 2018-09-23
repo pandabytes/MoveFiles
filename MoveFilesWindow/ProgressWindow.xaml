@@ -1,0 +1,21 @@
+﻿<Window x:Class="MoveFiles.Windows.ProgressWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MoveFiles.Windows"
+        mc:Ignorable="d"
+        Title="Progress" Height="149" Width="386">
+
+  <StackPanel>
+    <ProgressBar x:Name="u_progressBar" Margin="20 30 20 5" Height="20"/>
+
+    <TextBlock x:Name="u_progressText" HorizontalAlignment="Center" VerticalAlignment="Center" 
+               Margin="0 0 0 5" Text="" FontSize="10"/>
+
+    <Button x:Name="u_completedButton" HorizontalAlignment="Center"  Margin="0 10 0 0"
+            Content="Moving Completed" Click="CompletedButtonClickHandler" 
+            FontSize="11" Visibility="Hidden"/>
+  </StackPanel>
+  
+</Window>
