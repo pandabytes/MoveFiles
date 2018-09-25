@@ -14,8 +14,8 @@
     <TextBlock x:Name="u_progressText" HorizontalAlignment="Center" VerticalAlignment="Center" 
                Margin="0 0 0 5" Text="" FontSize="10"/>
 
-    <Button x:Name="u_completedButton" HorizontalAlignment="Center"  Margin="0 10 0 0"
-            Content="Ok" Click="CompletedButtonClickHandler" Width="50"
+    <Button x:Name="u_okButton" HorizontalAlignment="Center"  Margin="0 10 0 0"
+            Content="Ok" Click="OkButtonClickHandler" Width="50"
             FontSize="11" Visibility="Hidden"/>
   </StackPanel>
   

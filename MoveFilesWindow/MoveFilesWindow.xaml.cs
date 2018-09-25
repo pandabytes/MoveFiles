@@ -28,7 +28,7 @@ namespace MoveFiles.Windows
   /// <summary>
   /// Options to select file size unit.
   /// </summary>
-  public enum FileizeUnit
+  public enum FileSizeUnit
   {
     Bytes = 0,
     Megabytes = 1,
@@ -442,7 +442,7 @@ namespace MoveFiles.Windows
       TextBox minTextBox = u_sizeRangeGrid.Children.Cast<UIElement>().First(e => Grid.GetColumn(e) == 1 && Grid.GetRow(e) == 1) as TextBox;
       TextBox maxTextBox = u_sizeRangeGrid.Children.Cast<UIElement>().First(e => Grid.GetColumn(e) == 1 && Grid.GetRow(e) == 2) as TextBox;
 
-      FileizeUnit sizeUnitSelected = (FileizeUnit)sizeUnitComboBox.SelectedIndex;
+      FileSizeUnit sizeUnitSelected = (FileSizeUnit)sizeUnitComboBox.SelectedIndex;
 
       // Convert the string values to double values
       double min, max;
@@ -656,18 +656,18 @@ namespace MoveFiles.Windows
     /// </summary>
     /// <param name="sizeUnitSelected">The given selected unit</param>
     /// <returns>Return the convertion scale number.</returns>
-    private static double SizeUnitConversion(FileizeUnit sizeUnitSelected)
+    private static double SizeUnitConversion(FileSizeUnit sizeUnitSelected)
     {
       double conversion = 0.0;
       switch (sizeUnitSelected)
       {
-        case (FileizeUnit.Bytes):
+        case (FileSizeUnit.Bytes):
           conversion = 1.0;
           break;
-        case (FileizeUnit.Megabytes):
+        case (FileSizeUnit.Megabytes):
           conversion = 0.000001;
           break;
-        case (FileizeUnit.Gigabytes):
+        case (FileSizeUnit.Gigabytes):
           conversion = 0.000000001;
           break;
         default:
@@ -762,7 +762,7 @@ namespace MoveFiles.Windows
       }
       else
       {
-        m_progressWindow.CompletedButton.Visibility = Visibility.Visible;
+        m_progressWindow.OkButton.Visibility = Visibility.Visible;
         m_progressWindow.ProgressBarWindow.IsIndeterminate = false;
         m_progressWindow.ProgressTextBlock.Text = string.Format(ProgressWindow.CompletedMoveMessageFormat, 
                                                                 m_movedFilesCount, m_destinationDirectory);

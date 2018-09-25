@@ -30,11 +30,11 @@ namespace MoveFiles.Windows
     }
 
     /// <summary>
-    /// Get a reference to the completed button object.
+    /// Get a reference to the Ok button object.
     /// </summary>
-    public Button CompletedButton
+    public Button OkButton
     {
-      get { return u_completedButton; }
+      get { return u_okButton; }
     }
 
     /// <summary>
@@ -62,11 +62,11 @@ namespace MoveFiles.Windows
     #region Private Methods
 
     /// <summary>
-    /// Close the "this" object when the button is clicked.
+    /// Close the "this" object when the Ok button is clicked.
     /// </summary>
     /// <param name="sender">Sender object</param>
     /// <param name="e">Event arguments</param>
-    private void CompletedButtonClickHandler(object sender, RoutedEventArgs e)
+    private void OkButtonClickHandler(object sender, RoutedEventArgs e)
     {
       this.Close();
     }

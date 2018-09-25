@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:MoveFiles.Windows"
         mc:Ignorable="d"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
-        Title="MoveWindow" Height="308" Width="711.942">
+        Title="MoveWindow" Height="325.6" Width="711.942">
 
     <StackPanel>
         <TextBlock Text="Move Files!!!" Margin="0 20"
@@ -53,24 +53,16 @@
         </Grid>
       
         <!-- Reverse Button-->      
-        <Grid Margin="0 0 0 10">
+        <Grid Margin="0 0 0 15">
           <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="0.75*"/>
-            <ColumnDefinition Width="0.082*"/>
-            <ColumnDefinition Width="0.082*"/>
-            <ColumnDefinition Width="0.082*"/>
+            <ColumnDefinition Width="0.84*"/>
+            <ColumnDefinition Width="0.092*"/>
+            <ColumnDefinition Width="0.164*"/>
           </Grid.ColumnDefinitions>
 
-      <Button x:Name="u_reverseButton" Grid.Column="2" 
-              Content="Reverse" Click="ReverseButtonClickHandler"/> 
-        <!--<Button x:Name="u_reverseButton" Grid.Column="2" Click="ReverseButtonClickHandler">
-          <Button.Template>
-            <ControlTemplate>
-              <Image Source="Pictures\cs.jpg"/>
-          </ControlTemplate>
-          </Button.Template>
-        </Button>-->
-    </Grid>
+          <Button x:Name="u_reverseButton" Grid.Column="1"
+                  Content="Reverse" Click="ReverseButtonClickHandler"/> 
+        </Grid>
       
         <!-- Destination Directory -->
         <Grid Margin="0 0 0 10">
