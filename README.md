@@ -1,0 +1,1 @@
+MoveFile is a simple window application that allows users to move files from one folder to another folder. It can move files by 4 different selections: All, Size, Date, and Extensions. Users specify the required paths, if the required paths don't exist the application will display the approriate message for users to see.
