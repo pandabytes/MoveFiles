@@ -11,7 +11,7 @@ using COLG = System.Collections.Generic;
 using IO = System.IO;
 using WF = System.Windows.Forms;
 using REGEX = System.Text.RegularExpressions;
-
+using System.Threading;
 namespace MoveFiles.Windows
 {
   /// <summary>
@@ -689,13 +689,12 @@ namespace MoveFiles.Windows
       worker.RunWorkerCompleted += ProgressCompletedHandler;
       worker.ProgressChanged += ProgressChangedHandler;
       
-      // Create a ProgressWindow object and start the animation for the progress bar
+      // Create a ProgressWindow object
       m_progressWindow = new ProgressWindow();
       m_progressWindow.Owner = this;
-      m_progressWindow.ProgressBarWindow.IsIndeterminate = true;
-      SelectFilesByOption selection = (SelectFilesByOption)u_selectComboBox.SelectedIndex;
 
       // Start the thread in the background and show the ProgressWindow object to user
+      SelectFilesByOption selection = (SelectFilesByOption)u_selectComboBox.SelectedIndex;
       worker.RunWorkerAsync(argument: selection);
       m_progressWindow.ShowDialog();
     }
@@ -709,9 +708,9 @@ namespace MoveFiles.Windows
     {
       SelectFilesByOption selection = (SelectFilesByOption)e.Argument;
       BackgroundWorker worker = sender as BackgroundWorker;
-
+      
       // Use the Dispatcher object to access the UI objects. The background thread
-      // does not have access to the 
+      // does not have access to the UI objects
       this.Dispatcher.Invoke(() =>
       {
         switch (selection)

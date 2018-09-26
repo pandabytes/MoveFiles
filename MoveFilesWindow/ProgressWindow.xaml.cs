@@ -55,6 +55,8 @@ namespace MoveFiles.Windows
     public ProgressWindow()
     {
       InitializeComponent();
+      MaxWidth = MinWidth = Width;
+      MaxHeight = MinHeight = Height;
     }
 
     #endregion

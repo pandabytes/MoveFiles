@@ -9,7 +9,7 @@
         WindowStartupLocation="CenterOwner">
 
   <StackPanel>
-    <ProgressBar x:Name="u_progressBar" Margin="20 30 20 5" Height="20"/>
+    <ProgressBar x:Name="u_progressBar" Margin="20 30 20 5" Height="20" IsIndeterminate="True"/>
 
     <TextBlock x:Name="u_progressText" HorizontalAlignment="Center" VerticalAlignment="Center" 
                Margin="0 0 0 5" Text="" FontSize="10"/>
