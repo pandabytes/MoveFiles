@@ -11,7 +11,7 @@ using COLG = System.Collections.Generic;
 using IO = System.IO;
 using WF = System.Windows.Forms;
 using REGEX = System.Text.RegularExpressions;
-using System.Threading;
+
 namespace MoveFiles.Windows
 {
   /// <summary>
