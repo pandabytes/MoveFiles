@@ -694,9 +694,17 @@ namespace MoveFiles.Windows
       m_progressWindow.Owner = this;
 
       // Start the thread in the background and show the ProgressWindow object to user
-      SelectFilesByOption selection = (SelectFilesByOption)u_selectComboBox.SelectedIndex;
-      worker.RunWorkerAsync(argument: selection);
-      m_progressWindow.ShowDialog();
+      // Catch any thrown exception that is not caught in the background thread
+      try
+      {
+        SelectFilesByOption selection = (SelectFilesByOption)u_selectComboBox.SelectedIndex;
+        worker.RunWorkerAsync(argument: selection);
+        m_progressWindow.ShowDialog();
+      }
+      catch (Exception ex)
+      {
+        DisplayErrorMessage(ex);
+      }
     }
 
     /// <summary>
@@ -708,10 +716,11 @@ namespace MoveFiles.Windows
     {
       SelectFilesByOption selection = (SelectFilesByOption)e.Argument;
       BackgroundWorker worker = sender as BackgroundWorker;
-      
+
       // Use the Dispatcher object to access the UI objects. The background thread
-      // does not have access to the UI objects
-      this.Dispatcher.Invoke(() =>
+      // does not have access to the UI objects. This method will end once
+      // this block of code is finished.
+      Dispatcher.Invoke(() =>
       {
         switch (selection)
         {
