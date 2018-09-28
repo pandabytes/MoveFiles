@@ -32,7 +32,7 @@ namespace MoveFiles.Windows
   {
     Bytes = 0,
     Megabytes = 1,
-    Gigabytes = 2,
+    Gigabytes = 2
   }
 
   /// <summary>
@@ -437,21 +437,33 @@ namespace MoveFiles.Windows
     /// <param name="worker">The backgroundworker thread used to update the m_progressWindow</param>
     private void MoveSize(BackgroundWorker worker)
     {
-      // Get the min and max values from XAML form
-      ComboBox sizeUnitComboBox = u_sizeRangeGrid.Children.Cast<UIElement>().First(e => e is ComboBox) as ComboBox;
-      TextBox minTextBox = u_sizeRangeGrid.Children.Cast<UIElement>().First(e => Grid.GetColumn(e) == 1 && Grid.GetRow(e) == 1) as TextBox;
-      TextBox maxTextBox = u_sizeRangeGrid.Children.Cast<UIElement>().First(e => Grid.GetColumn(e) == 1 && Grid.GetRow(e) == 2) as TextBox;
+      double min = 0.0, max = 0.0;
+      bool validMin = false, validMax = false;
+      FileSizeUnit sizeUnitSelected = FileSizeUnit.Bytes;
 
-      FileSizeUnit sizeUnitSelected = (FileSizeUnit)sizeUnitComboBox.SelectedIndex;
+      // Access the UI objects from another thread is done via Dispatcher object
+      Dispatcher.Invoke(() =>
+      {
+        // Get the min and max values from XAML form
+        ComboBox sizeUnitComboBox = u_sizeRangeGrid.Children.Cast<UIElement>().First(e => e is ComboBox) as ComboBox;
+        TextBox minTextBox = u_sizeRangeGrid.Children.Cast<UIElement>().First(e => Grid.GetColumn(e) == 1 && Grid.GetRow(e) == 1) as TextBox;
+        TextBox maxTextBox = u_sizeRangeGrid.Children.Cast<UIElement>().First(e => Grid.GetColumn(e) == 1 && Grid.GetRow(e) == 2) as TextBox;
 
-      // Convert the string values to double values
-      double min, max;
-      bool validMin = double.TryParse(minTextBox.Text, out min);
-      bool validMax = double.TryParse(maxTextBox.Text, out max);
+        sizeUnitSelected = (FileSizeUnit)sizeUnitComboBox.SelectedIndex;
+
+        // Convert the string values to double values
+        validMin = double.TryParse(minTextBox.Text, out min);
+        validMax = double.TryParse(maxTextBox.Text, out max);
+      });
+
+      if (!validMin && !validMax)
+      {
+        throw new ArgumentException("Min and max need to be numbers");
+      }
 
       if (min > max)
       {
-        throw new Exception("Min size cannot exceed max size");
+        throw new ArgumentException("Min size cannot exceed max size");
       }
 
       // Get the conversion scale based on the selected Unit 
@@ -497,15 +509,20 @@ namespace MoveFiles.Windows
     /// <param name="worker">The backgroundworker thread used to update the m_progressWindow</param>
     private void MoveExtensions(BackgroundWorker worker)
     {
-      TextBox extensionTextBox = u_extensionGrid.Children.Cast<UIElement>().First(e => Grid.GetColumn(e) == 1) as TextBox;
-
-      if (string.IsNullOrWhiteSpace(extensionTextBox.Text))
+      // Access the UI objects from another thread is done via Dispatcher object
+      string extensionText = null;
+      Dispatcher.Invoke(() =>
       {
-        throw new Exception("No extension(s) specified");
+        extensionText = (u_extensionGrid.Children.Cast<UIElement>().First(e => Grid.GetColumn(e) == 1) as TextBox).Text;
+      });
+
+      if (string.IsNullOrWhiteSpace(extensionText))
+      {
+        throw new ArgumentException("No extension(s) specified");
       }
       else
       {
-        string[] extensions = REGEX.Regex.Split(extensionTextBox.Text, @"\s+|,+");
+        string[] extensions = REGEX.Regex.Split(extensionText, @"\s+|,+");
         try
         {
           // Go through each extension
@@ -716,34 +733,28 @@ namespace MoveFiles.Windows
     {
       SelectFilesByOption selection = (SelectFilesByOption)e.Argument;
       BackgroundWorker worker = sender as BackgroundWorker;
-
-      // Use the Dispatcher object to access the UI objects. The background thread
-      // does not have access to the UI objects. This method will end once
-      // this block of code is finished.
-      Dispatcher.Invoke(() =>
+      
+      switch (selection)
       {
-        switch (selection)
-        {
-          case SelectFilesByOption.All:
-            MoveAll(worker);
-            break;
+        case SelectFilesByOption.All:
+          MoveAll(worker);
+          break;
 
-          case SelectFilesByOption.Size:
-            MoveSize(worker);
-            break;
+        case SelectFilesByOption.Size:
+          MoveSize(worker);
+          break;
 
-          case SelectFilesByOption.Date:
-            MoveByDate(worker);
-            break;
+        case SelectFilesByOption.Date:
+          MoveByDate(worker);
+          break;
 
-          case SelectFilesByOption.Extension:
-            MoveExtensions(worker);
-            break;
+        case SelectFilesByOption.Extension:
+          MoveExtensions(worker);
+          break;
 
-          default:
-            break;
-        }
-      });
+        default:
+          break;
+      }
     }
 
     /// <summary>
