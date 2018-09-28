@@ -73,6 +73,11 @@ namespace MoveFiles.Windows
       this.Close();
     }
 
+    private void CancelButtonClickHandler(object sender, RoutedEventArgs e)
+    {
+
+    }
+
     #endregion
   }
 }
