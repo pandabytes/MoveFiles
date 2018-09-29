@@ -709,6 +709,7 @@ namespace MoveFiles.Windows
       // Create a ProgressWindow object
       m_progressWindow = new ProgressWindow();
       m_progressWindow.Owner = this;
+      m_progressWindow.Canceled += ProgressCanceledHandler;
 
       // Start the thread in the background and show the ProgressWindow object to user
       // Catch any thrown exception that is not caught in the background thread
@@ -721,6 +722,7 @@ namespace MoveFiles.Windows
       catch (Exception ex)
       {
         DisplayErrorMessage(ex);
+        m_progressWindow.Canceled -= ProgressCanceledHandler;
       }
     }
 
@@ -786,6 +788,11 @@ namespace MoveFiles.Windows
         m_progressWindow.ProgressTextBlock.Text = string.Format(ProgressWindow.CompletedMoveMessageFormat, 
                                                                 m_movedFilesCount, m_destinationDirectory);
       }
+    }
+
+    private void ProgressCanceledHandler(object sender, EventArgs e)
+    {
+	throw new NotImplementedException();
     }
 
     #endregion

@@ -73,10 +73,29 @@ namespace MoveFiles.Windows
       this.Close();
     }
 
+    /// <summary>
+    /// Cancel the moving operation when the Cancel button is clicked.
+    /// </summary>
+    /// <param name="sender">Sender object</param>
+    /// <param name="e">Event arguments</param>
     private void CancelButtonClickHandler(object sender, RoutedEventArgs e)
     {
-
+      OnCanceled(EventArgs.Empty);
     }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="e"></param>
+    protected virtual void OnCanceled(EventArgs e)
+    {
+      Canceled?.Invoke(this, e);
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public event EventHandler Canceled; 
 
     #endregion
   }
