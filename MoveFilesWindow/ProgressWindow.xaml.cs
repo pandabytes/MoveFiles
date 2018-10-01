@@ -22,6 +22,11 @@ namespace MoveFiles.Windows
     public const string CompletedMoveMessageFormat = "Moved {0} files & directories to {1}";
 
     /// <summary>
+    /// Message indicating the move operation is being canceled.
+    /// </summary>
+    public const string CanceledMessage = "Move operation is canceled";
+
+    /// <summary>
     /// Get a reference to the progress bar object.
     /// </summary>
     public ProgressBar ProgressBarWindow

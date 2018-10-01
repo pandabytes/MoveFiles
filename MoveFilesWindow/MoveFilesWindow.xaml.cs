@@ -12,6 +12,8 @@ using IO = System.IO;
 using WF = System.Windows.Forms;
 using REGEX = System.Text.RegularExpressions;
 
+using System.Threading;
+
 namespace MoveFiles.Windows
 {
   /// <summary>
@@ -369,6 +371,7 @@ namespace MoveFiles.Windows
           string destinationFile = IO.Path.Combine(m_destinationDirectory, fileInfo.Name);
           IO.File.Move(fileInfo.FullName, destinationFile);
           worker.ReportProgress(++m_movedFilesCount);
+          Thread.Sleep(2000);
         }
 
         // Move directories
@@ -377,6 +380,7 @@ namespace MoveFiles.Windows
           string destinationDirectory = IO.Path.Combine(m_destinationDirectory, dirInfo.Name);
           IO.Directory.Move(dirInfo.FullName, destinationDirectory);
           worker.ReportProgress(++m_movedFilesCount);
+          Thread.Sleep(2000);
         }
       }
       catch (Exception ex)
@@ -704,7 +708,7 @@ namespace MoveFiles.Windows
       worker.WorkerReportsProgress = true;
       worker.DoWork += MoveFilesInBackground;
       worker.RunWorkerCompleted += ProgressCompletedHandler;
-      worker.ProgressChanged += ProgressChangedHandler;
+      //worker.ProgressChanged += ProgressChangedHandler;
       
       // Create a ProgressWindow object
       m_progressWindow = new ProgressWindow();
@@ -723,6 +727,7 @@ namespace MoveFiles.Windows
       {
         DisplayErrorMessage(ex);
         m_progressWindow.Canceled -= ProgressCanceledHandler;
+        m_progressWindow.Close();
       }
     }
 
@@ -776,10 +781,15 @@ namespace MoveFiles.Windows
     /// <param name="e">Event arguments</param>
     private void ProgressCompletedHandler(object sender, RunWorkerCompletedEventArgs e)
     {
+      m_progressWindow.Canceled -= ProgressCanceledHandler;
       if (e.Error != null)
       {
         DisplayErrorMessage(e.Error);
         m_progressWindow.Close();
+      }
+      else if (e.Cancelled)
+      {
+        m_progressWindow.ProgressTextBlock.Text = ProgressWindow.CanceledMessage;
       }
       else
       {
@@ -792,7 +802,7 @@ namespace MoveFiles.Windows
 
     private void ProgressCanceledHandler(object sender, EventArgs e)
     {
-	throw new NotImplementedException();
+      //m_progressWindow.ProgressTextBlock.Text = ProgressWindow.CanceledMessage;
     }
 
     #endregion
