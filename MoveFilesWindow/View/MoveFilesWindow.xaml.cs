@@ -11,10 +11,12 @@ using COLG = System.Collections.Generic;
 using IO = System.IO;
 using WF = System.Windows.Forms;
 using REGEX = System.Text.RegularExpressions;
+using MWI = MoveFiles.Windows.Interfaces;
+using MWC = MoveFiles.Windows.Controller;
 
 using System.Threading;
 
-namespace MoveFiles.Windows
+namespace MoveFiles.Windows.View
 {
   /// <summary>
   /// Options to select files by.
@@ -40,7 +42,7 @@ namespace MoveFiles.Windows
   /// <summary>
   /// Interaction logic for MoveWindow.xaml
   /// </summary>
-  public partial class MoveFilesWindow : Window
+  public partial class MoveFilesWindow : Window, MWI.IView
   {
     #region Member Variables
 
@@ -95,6 +97,11 @@ namespace MoveFiles.Windows
     /// Reference to the ProgressWindow object.
     /// </summary>
     private ProgressWindow m_progressWindow;
+
+    /// <summary>
+    /// The controller object
+    /// </summary>
+    private MWC.Controller m_controller;
 
     #endregion
 
@@ -740,7 +747,7 @@ namespace MoveFiles.Windows
     {
       SelectFilesByOption selection = (SelectFilesByOption)e.Argument;
       BackgroundWorker worker = sender as BackgroundWorker;
-      
+
       switch (selection)
       {
         case SelectFilesByOption.All:
@@ -800,9 +807,14 @@ namespace MoveFiles.Windows
       }
     }
 
+    /// <summary>
+    /// Handler used for canceling the move operation
+    /// </summary>
+    /// <param name="sender">Sender</param>
+    /// <param name="e">Event argument</param>
     private void ProgressCanceledHandler(object sender, EventArgs e)
     {
-      //m_progressWindow.ProgressTextBlock.Text = ProgressWindow.CanceledMessage;
+      throw new NotImplementedException();
     }
 
     #endregion

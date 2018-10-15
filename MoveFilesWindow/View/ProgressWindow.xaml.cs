@@ -2,7 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 
-namespace MoveFiles.Windows
+namespace MoveFiles.Windows.View
 {
   /// <summary>
   /// Interaction logic for ProgressWindow.xaml
@@ -50,6 +50,11 @@ namespace MoveFiles.Windows
       get { return u_progressText; }
     }
 
+    /// <summary>
+    /// The Canceled event.
+    /// </summary>
+    public event EventHandler Canceled;
+
     #endregion
 
     #region Constructors
@@ -89,18 +94,13 @@ namespace MoveFiles.Windows
     }
 
     /// <summary>
-    /// 
+    /// Raise the Canceled event
     /// </summary>
-    /// <param name="e"></param>
+    /// <param name="e">Event argument</param>
     protected virtual void OnCanceled(EventArgs e)
     {
       Canceled?.Invoke(this, e);
     }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public event EventHandler Canceled; 
 
     #endregion
   }
